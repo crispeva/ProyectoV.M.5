@@ -1,0 +1,1 @@
+{"explosionCount":2,"spawnCount":12,"collisionCount":18}
