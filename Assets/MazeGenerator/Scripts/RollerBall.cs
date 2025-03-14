@@ -13,7 +13,7 @@ public class RollerBall : MonoBehaviour {
 
 	private Rigidbody mRigidBody = null;
 	private AudioSource mAudioSource = null;
-	private bool mFloorTouched = false;
+	public bool mFloorTouched = false;
 
 	void Start () {
 		mRigidBody = GetComponent<Rigidbody> ();
