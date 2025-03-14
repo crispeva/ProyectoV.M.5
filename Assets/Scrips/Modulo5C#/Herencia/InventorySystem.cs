@@ -13,6 +13,7 @@ namespace Inventario
         #endregion
 
         #region Fields
+        //TODO:Refactor move this to UIController
         [Header("UI Reffs")]
         [SerializeField] private ItemButton _prefabsButton;
         [SerializeField] private Transform _inventoryPanel;
@@ -38,6 +39,7 @@ namespace Inventario
             //Inicializar la UI con los items
             InitializeUi();
 
+            //TODO:Refactor
             _useButton.onClick.AddListener(UseCurrentItem);
             _sellButton.onClick.AddListener(SellCurrentItem);
         }
@@ -117,13 +119,15 @@ namespace Inventario
         }
 
         //Funciones de acciones de botones
+
+        //Refactor
         private void SellCurrentItem()
         {
             //Se llama a la funcion de vender del item seleccionado
             (_currentItemSelected.Current_Item as ISeable).Sell();
             ConsumeItem();
         }
-
+        //Refactor
         private void UseCurrentItem()
         {
             (_currentItemSelected.Current_Item as IUsable).Use();
