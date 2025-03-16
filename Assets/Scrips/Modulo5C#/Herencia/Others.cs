@@ -2,17 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//Se indica de esta manera englobando todo el script
 namespace Inventario
 {
-    public interface IConsumable { }
-
     [Serializable]
-    public class Food : Item, IUsable, ISeable,IConsumable
+    public class Others : Item, ISeable
     {
         #region Properties
         [field: SerializeField] public float Price { get; set; }
-        [field: SerializeField] public float HealingPoints { get; set; }
         #endregion
 
         #region Fields
@@ -37,12 +33,6 @@ namespace Inventario
         {
             Debug.Log("Has ganado: " + Price + " dineritos!");
             return Price;
-        }
-
-        public void Use()
-        {
-            Debug.Log("Comiendo: " + name + " y ganas " + HealingPoints + "puntos de vida recuperados");
-
         }
         #endregion
 
