@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd05f85450760b947ab40c97af1a53de, type: 3}
   m_Name: NuevoItem
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: Hacha
   itemIcon: {fileID: 0}
-  itemID: 0
-  description: 
-  isStackable: 0
+  itemID: 2
+  description: hola
+  isStackable: 1

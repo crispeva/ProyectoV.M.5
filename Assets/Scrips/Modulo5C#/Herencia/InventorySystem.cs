@@ -13,16 +13,12 @@ namespace Inventario
         #endregion
 
         #region Fields
-        //TODO:Refactor move this to UIController
         [Header("UI Reffs")]
-        [SerializeField] private ItemButton _prefabsButton;
-        [SerializeField] private Transform _inventoryPanel;
-        [SerializeField] private Button _useButton;
-        [SerializeField] private Button _sellButton;
-
+        private UIControl _uicontrol;
         [Header("Items")]
         [SerializeField] private Weapon[] _weapons;
         [SerializeField] private Food[] _food;
+        [SerializeField] private Others[] _others;
 
         [Header("Inventario")]
         [SerializeField] private List<Item> _items = new List<Item>();
@@ -32,16 +28,20 @@ namespace Inventario
         #endregion
 
         #region Unity Callbacks
+        void Awake()
+        {
+            _uicontrol=GetComponent<UIControl>();
+        }
         void Start()
         {
             //Inicializar los items en la lista
             InitializeItems();
             //Inicializar la UI con los items
             InitializeUi();
+            //Asignar las funciones a los botones de la UI
+            _uicontrol.UseButton.onClick.AddListener(() => _uicontrol.UseCurrentItem(_currentItemSelected));
+            _uicontrol.SellButton.onClick.AddListener(() => _uicontrol.SellCurrentItem(_currentItemSelected));
 
-            //TODO:Refactor
-            _useButton.onClick.AddListener(UseCurrentItem);
-            _sellButton.onClick.AddListener(SellCurrentItem);
         }
 
         // Update is called once per frame
@@ -55,37 +55,11 @@ namespace Inventario
         public void AddItem(ItemButton itemToAdd)
         {
             //Instanciar un nuevo item en el inventario con el item seleccionado
-            ItemButton newButtonItem = Instantiate(itemToAdd, _inventoryPanel);
+            ItemButton newButtonItem = Instantiate(itemToAdd, _uicontrol.InventoryPanel);
             newButtonItem.Current_Item = itemToAdd.Current_Item;
             //Con el nuevo boton instanciado se le asigna la funcion de seleccionar item al clickear
             newButtonItem.OnClick += () => SelectItem(newButtonItem);
         }
-        //Funcion dependiedo del item seleccionado se activan o desactivan los botones de acciones
-        public void SelectItem(ItemButton current_Item)
-        {
-            _currentItemSelected = current_Item;
-            //Logica control de botones de acciones
-            if(_currentItemSelected.Current_Item is IUsable)
-            {
-                _useButton.gameObject.SetActive(true);
-                
-            }
-            else
-            {
-                _useButton.gameObject.SetActive(false);
-            }
-
-            if (_currentItemSelected.Current_Item is ISeable)
-            {
-                _sellButton.gameObject.SetActive(true);
-                
-            }
-            else
-            {
-                _sellButton.gameObject.SetActive(false);
-            }
-        }
-
         #endregion
 
         #region Private Methods
@@ -94,13 +68,13 @@ namespace Inventario
             for (int i = 0; i < _items.Count; i++)
             {
                 //Instaciamos un nuevo boton con el prefab de boton de item en el panel de inventario
-                ItemButton newButton = Instantiate(_prefabsButton, _prefabsButton.transform.parent);
+                ItemButton newButton = Instantiate(_currentItemSelected, _currentItemSelected.transform.parent);
                 newButton.Current_Item = _items[i];
                 //Si se hace click en el boton se llama a la funcion AddItem
                 newButton.OnClick += () => AddItem(newButton);
             }
             //Desactivar el prefab
-            _prefabsButton.gameObject.SetActive(false);
+            _currentItemSelected.gameObject.SetActive(false);
         }
 
         
@@ -116,32 +90,39 @@ namespace Inventario
             {
                 _items.Add(_food[i]);
             }
+            for (int i = 0; i < _others.Length; i++)
+            {
+                _items.Add(_others[i]);
+            }
         }
 
         //Funciones de acciones de botones
-
-        //Refactor
-        private void SellCurrentItem()
+        public void SelectItem(ItemButton current_Item)
         {
-            //Se llama a la funcion de vender del item seleccionado
-            (_currentItemSelected.Current_Item as ISeable).Sell();
-            ConsumeItem();
-        }
-        //Refactor
-        private void UseCurrentItem()
-        {
-            (_currentItemSelected.Current_Item as IUsable).Use();
-            if(_currentItemSelected.Current_Item is IConsumable)
+            _currentItemSelected = current_Item;
+            //Logica control de botones de acciones
+            if (_currentItemSelected.Current_Item is IUsable)
             {
-                ConsumeItem();
+                _uicontrol.UseButton.gameObject.SetActive(true);
+
+            }
+            else
+            {
+                _uicontrol.UseButton.gameObject.SetActive(false);
             }
 
+            if (_currentItemSelected.Current_Item is ISeable)
+            {
+                _uicontrol.SellButton.gameObject.SetActive(true);
+
+            }
+            else
+            {
+                _uicontrol.SellButton.gameObject.SetActive(false);
+            }
         }
-        private void ConsumeItem()
-        {
-            Destroy(_currentItemSelected.gameObject);
-            _currentItemSelected = null;
-        }
+
+
         #endregion
 
     }
